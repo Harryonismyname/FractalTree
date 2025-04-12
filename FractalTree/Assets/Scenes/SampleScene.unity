@@ -460,13 +460,14 @@ MonoBehaviour:
   leafMat: {fileID: 2100000, guid: f96cb543eccd35947bf0ec90abe54e9b, type: 2}
   thetaInDeg: 60
   fiboLimit: 30
-  startingFiboStep: 1
+  startingFiboStep: 2
   fiboStepSize: 1
-  branchesPerLimb: 4
-  branchLengthLimit: 10
-  startingBranch: 45
-  leafStartLength: 10
+  branchesPerLimb: 2
+  branchLengthLimit: 1
+  startingBranch: 5
+  leafStartLength: 2
   stepLenPercentChange: 0.75
+  centerStepLenPercentChange: 0.9
 --- !u!4 &1129440755
 Transform:
   m_ObjectHideFlags: 0

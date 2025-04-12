@@ -18,6 +18,7 @@ public class FractalGenerator : MonoBehaviour
     [SerializeField] float leafStartLength = 10;
     [Range(.01f, 1f)]
     [SerializeField] float stepLenPercentChange = .75f;
+    [SerializeField] float centerStepLenPercentChange = .9f;
 
     Vector3 RandomFibo(float f) => new (0, f * Random.Range(-1, 2), 0);
     IEnumerator Tree(float limbLen, Vector3 nextBranchPos, Vector3 nextBranchEulerAngles, int n)
@@ -77,30 +78,33 @@ public class FractalGenerator : MonoBehaviour
 
             nextBranchPos = cylinder.transform.position + (cylinder.transform.up * limbLen);
             // Center
-            StartCoroutine(Tree(limbLen * stepLenPercentChange, nextBranchPos, nextBranchEulerAngles + RandomFibo(f), n + fiboStepSize));
+            // Adding some Bend
+            Vector3 centerEulerAngles = nextBranchEulerAngles + (f * cylinder.transform.right) + (f * cylinder.transform.forward);
+            StartCoroutine(Tree(limbLen * centerStepLenPercentChange, nextBranchPos, centerEulerAngles, n + fiboStepSize));
 
             nextBranchEulerAngles += thetaInDeg * transform.right;
             for (int i = 0; i <= branchesPerLimb; i++)
             {
-                nextBranchEulerAngles = Quaternion.AngleAxis(Fibo(f+i) * thetaInDeg, transform.up) * nextBranchEulerAngles;
+                nextBranchEulerAngles = Quaternion.AngleAxis(Fibo(f + i) * thetaInDeg, cylinder.transform.up) * nextBranchEulerAngles;
                 StartCoroutine(Tree(limbLen * stepLenPercentChange, nextBranchPos, nextBranchEulerAngles + RandomFibo(f), n + fiboStepSize));
+                yield return new WaitForSeconds(.5f);
             }
 
-/*
-            //here is the recursive magic
-            StartCoroutine(Tree(limbLen * stepLenPercentChange, nextBranchPos, nextBranchEulerAngles + RandomFibo(f), n + fiboStepSize));
-            //now you have to go back to where you were
-            nextBranchEulerAngles += transform.right * (-2 * thetaInDeg);
-            //this does the other side (also recursive)
-            StartCoroutine(Tree(limbLen * stepLenPercentChange, nextBranchPos, nextBranchEulerAngles + RandomFibo(f), n - fiboStepSize));
-            // Forward
-            nextBranchEulerAngles += transform.forward * (thetaInDeg);
-            StartCoroutine(Tree(limbLen * stepLenPercentChange, nextBranchPos, nextBranchEulerAngles + RandomFibo(f), n + fiboStepSize));
+            /*
+                        //here is the recursive magic
+                        StartCoroutine(Tree(limbLen * stepLenPercentChange, nextBranchPos, nextBranchEulerAngles + RandomFibo(f), n + fiboStepSize));
+                        //now you have to go back to where you were
+                        nextBranchEulerAngles += transform.right * (-2 * thetaInDeg);
+                        //this does the other side (also recursive)
+                        StartCoroutine(Tree(limbLen * stepLenPercentChange, nextBranchPos, nextBranchEulerAngles + RandomFibo(f), n - fiboStepSize));
+                        // Forward
+                        nextBranchEulerAngles += transform.forward * (thetaInDeg);
+                        StartCoroutine(Tree(limbLen * stepLenPercentChange, nextBranchPos, nextBranchEulerAngles + RandomFibo(f), n + fiboStepSize));
 
-            //Backward
-            nextBranchEulerAngles += transform.forward * (-2 * thetaInDeg);
-            StartCoroutine(Tree(limbLen * stepLenPercentChange, nextBranchPos, nextBranchEulerAngles + RandomFibo(f), n - fiboStepSize));
-*/
+                        //Backward
+                        nextBranchEulerAngles += transform.forward * (-2 * thetaInDeg);
+                        StartCoroutine(Tree(limbLen * stepLenPercentChange, nextBranchPos, nextBranchEulerAngles + RandomFibo(f), n - fiboStepSize));
+            */
         }
     }
 
